@@ -17,28 +17,25 @@ const App = () => {
   }
   
   useEffect(hook, [])
-
-  // const handlesearch = (event) => {
-  //   const searchCountry = event.target.value.toLowerCase()
-  //   setNewSearch(searchCountry)
-  //   const newCountries = countries.filter (
-  //     (country) => 
-  //     country.name.toLowerCase().search(searchCountry) !== -1
-  //   )
-  //   setCountriesFilter(newCountries)
-  // }
+//searchname == search
+//filterperson == handlesearch
+  const handlesearch = (event) => {
+    const searchCountry = event.target.value.toLowerCase()
+    setNewSearch(searchCountry)
+    const newCountries = countries.filter (
+      (country) => 
+      country['name']['common'].toLowerCase().search(searchCountry) !== -1
+    )
+    setCountriesFilter(newCountries)
+  }
   
   return (
     <div>
-      {/* <p>find countries: <input value={search} onChange={handlesearch}/></p> */}
-      <ul> {countries.map(each =>
-      <li>{each['name']['common']}</li>)
-        }
-       
-        {/* <li>
-          {countriesFilter.map(country =>
-            <li> country={country} </li>)}
-        </li> */}
+      <div>
+        filter shown with: <input value={search} onChange={handlesearch} />
+      </div>
+      <ul> {countriesFilter.map(each =>
+      <li key={each['ccn3']}>{each['name']['common']}</li>)}
       </ul>
     </div>
   )
