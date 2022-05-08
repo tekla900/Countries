@@ -9,42 +9,34 @@ const Search = ({ search, handlesearch }) => {
   )
 }
 
-const Content = ({ countriesFilter }) => {
+const Content = ({ countriesFilter, handlesearch }) => {
   if (countriesFilter.length === 1) {
     const country = countriesFilter[0]
-    // const lang = country['languages'].values()
     return (
       <div>
         <h1>{country['name']['common']}</h1>
         <p>capital {country['capital']}</p>
         <p>area {country['area']}</p>
         <h3>languages:</h3>
-      
+        {/* <Lang country={country} /> */}
         <img src={country['flags']['png']} alt={country['name']['common']}></img>
       </div>
     )
   }
 
-
   return (
       <ul> {countriesFilter.map(each =>
-        <li key={each['ccn3']}>{each['name']['common']}</li>)}
+        <li key={each['name']['common']}>{
+        each['name']['common']}  
+        <button value={each['name']['common']} onClick={handlesearch}>show</button>
+        </li>)}
       </ul>
   )
+
 }
 
-const Results = ({ countriesFilter }) => {
-  if (countriesFilter.length === 1) {
-    const country = countriesFilter[0]
-    return (
-      <div>
-        <h1>{country.name}</h1>
-      </div>
-    )
-  }
-  if (countriesFilter.length > 10) return <p>too many</p>
-  return countriesFilter.map(country => <li key={country['ccn3']}>{country['name']['common']}</li>)
-}
+
+
 
 const App = () => {
   const [countries, setCountries] = useState([])
@@ -52,11 +44,9 @@ const App = () => {
   const[countriesFilter, setCountriesFilter] = useState(countries)
 
   const hook = () => {
-    console.log('effect')
     axios
       .get('https://restcountries.com/v3.1/all')
       .then(response => {
-        console.log(response.data[0]['name']['common'])
         setCountries(response.data)
       })
   }
@@ -72,31 +62,15 @@ const App = () => {
     )
     setCountriesFilter(newCountries)
   }
-  // if (countriesFilter.length > 10) {
-  //   return (
-  //     <div>
-  //     <Search search={search} handlesearch={handlesearch} />
-  //     <p>{countriesFilter.length}</p>
-  //     <p>Too many matches, specify another filter</p>
-  //   </div>
-  //   )
-  // } else if (countriesFilter.length < 10 && countriesFilter.length > 1) {
-  //   return (
-  //     <div>
-  //       <Search search={search} handlesearch={handlesearch} />
-  //       <p>{countriesFilter.length}</p>
-  //       <Content countriesFilter={countriesFilter} />
-  //     </div>
-  //   )
-  // } 
+  
+
   return (
     <div>
       <Search search={search} handlesearch={handlesearch} />
       <p>{countriesFilter.length}</p>
-      <Content countriesFilter={countriesFilter} />
+      <Content countriesFilter={countriesFilter} handlesearch={handlesearch}/>
     </div>
   )
 } 
-
 
 export default App;
