@@ -9,16 +9,29 @@ const Search = ({ search, handlesearch }) => {
   )
 }
 
+const Language = ({ country }) => {
+  const langs = Object.values(country['languages'])
+  return (
+    <ul>
+    {langs.map((each) => <li key={each}>{each}</li>)}
+    </ul>
+    )
+    
+}
+
 const Content = ({ countriesFilter, handlesearch }) => {
   if (countriesFilter.length === 1) {
     const country = countriesFilter[0]
+    // console.log(country['capital'][0]);
     return (
       <div>
         <h1>{country['name']['common']}</h1>
         <p>capital {country['capital']}</p>
         <p>area {country['area']}</p>
+        {/* <Weather country={country['capital'][0]} /> */}
+        <Weather country={country} />
         <h3>languages:</h3>
-        {/* <Lang country={country} /> */}
+        <Language country={country} />
         <img src={country['flags']['png']} alt={country['name']['common']}></img>
       </div>
     )
@@ -35,8 +48,34 @@ const Content = ({ countriesFilter, handlesearch }) => {
 
 }
 
-
-
+const Weather = ({ country }) => {
+  const [weather, setWeather] = useState([])
+  const [wind, setWind] = useState([])
+  const [iconImg, setImg] = useState([])
+  const capital = country['capital'][0] 
+  const api_key = process.env.REACT_APP_API_KEY
+  const url = `http://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`
+  
+  const weather_hook = () => {
+    axios
+    .get(url)
+      .then(response => {
+        setImg(response.data['weather'][0]['icon'])
+        setWeather(response.data['main']['temp'])
+        setWind(response.data['wind']['speed'])
+      })
+  }
+  
+  useEffect(weather_hook, [])
+  return (
+    <div>
+      <h2>Weather in {capital}</h2>
+      <p>temperature is {weather} Celsius</p>
+      <p>wind {wind} m/s</p>
+      <img src={`http://openweathermap.org/img/wn/${iconImg}@2x.png`} />
+    </div>
+  )
+}
 
 const App = () => {
   const [countries, setCountries] = useState([])
@@ -67,7 +106,6 @@ const App = () => {
   return (
     <div>
       <Search search={search} handlesearch={handlesearch} />
-      <p>{countriesFilter.length}</p>
       <Content countriesFilter={countriesFilter} handlesearch={handlesearch}/>
     </div>
   )
